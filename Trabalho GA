@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void exibirMenu();
+void novaSimulacao();
+void exibirResultados(int ciclos, int populacaoFinal);
+
+int main() {
+    int opcao;
+
+    do {
+        exibirMenu();
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                novaSimulacao();
+                break;
+            case 2:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+                break;
+        }
+    } while (opcao != 2);
+
+    return 0;
+}
+
+void exibirMenu() {
+    printf("Menu Inicial:\n");
+    printf("1 - Nova Simulação\n");
+    printf("2 - Sair do Programa\n");
+    printf("Escolha uma opção: ");
+}
+
+void novaSimulacao() {
+    int populacao, taxaCrescimento, ciclos;
+    int i, impacto;
+    float novaPopulacao;
+
+    // Configurando a semente do gerador de números aleatórios
+    srand(time(NULL));
+
+    // Entrada de dados
+    printf("Digite a população inicial de bactérias (inteiro positivo): ");
+    scanf("%d", &populacao);
+    printf("Digite a taxa de crescimento (percentual inteiro): ");
+    scanf("%d", &taxaCrescimento);
+    printf("Digite o número de ciclos: ");
+    scanf("%d", &ciclos);
+
+    for (i = 0; i < ciclos; i++) {
+        // Calculando a nova população
+        novaPopulacao = populacao + (populacao * taxaCrescimento / 100.0);
+
+        // Verificando condição ambiental
+        int condicao = rand() % 100;
+        if (condicao < 5) { // Radiação Ultravioleta
+            impacto = -50;
+            printf("Ciclo %d: Radiação Ultravioleta! ", i + 1);
+        } else if (condicao < 15) { // Falta de Nutrientes
+            impacto = -25;
+            printf("Ciclo %d: Falta de Nutrientes! ", i + 1);
+        } else if (condicao < 25) { // Alta Temperatura
+            impacto = -30;
+            printf("Ciclo %d: Alta Temperatura! ", i + 1);
+        } else if (condicao < 35) { // Excesso de Umidade
+            impacto = -20;
+            printf("Ciclo %d: Excesso de Umidade! ", i + 1);
+        } else if (condicao < 45) { // Condição Favorável
+            impacto = 20;
+            printf("Ciclo %d: Condição Favorável! ", i + 1);
+        } else {
+            impacto = 0; // Sem condição
+        }
+
+        // Aplicando impacto na nova população
+        novaPopulacao += (novaPopulacao * impacto / 100.0);
+
+        // Validação da população
+        if (novaPopulacao < 0) {
+            novaPopulacao = 0;
+        }
+
+        // Atualizando a população
+        populacao = (int)novaPopulacao;
+
+        // Exibindo resultados
+        printf("População atual: %d\n", populacao);
+
+        // Verificando se a população morreu
+        if (populacao == 0) {
+            printf("A população morreu. Simulação encerrada.\n");
+            break;
+        }
+    }
+
+    exibirResultados(i + 1, populacao);
+}
+
+void exibirResultados(int ciclos, int populacaoFinal) {
+    printf("Resultados finais após %d ciclos:\n", ciclos);
+    printf("População final: %d\n", populacaoFinal);
+}
